@@ -196,6 +196,8 @@ int main(int argc, char **argv){
     MPI_File_close(&finh);
     MPI_File_close(&fouth);
 
+    free(num);
+
     //final
     MPI_Finalize();
 
