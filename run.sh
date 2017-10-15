@@ -3,8 +3,8 @@
 
 prog='./HW1_103062372_advanced'
 p='-p batch'
-declare -a Narr=('1'  '2'  '3'  '4')
-declare -a narr=('12' '24' '36' '48')
+declare -a Narr=('4'  '4'  '4'  '4')
+declare -a narr=('1' '4' '16' '48')
 number=100000000
 pf='100M'
 cs="testcase/case${pf}"
