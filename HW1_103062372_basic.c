@@ -11,6 +11,19 @@
 #define IS_EVEN(a) ((~(a))&1)
 #define IS_ODD(a) ((a)&1)
 
+
+#ifdef __MEASURE_TIME__
+    double __temp_time=0;
+    #define TIC     __temp_time = MPI_Wtime()
+    #define TOC(X)  X += (MPI_Wtime() - __temp_time)
+    #define TIME(X) X = MPI_Wtime()
+#else
+    #define TIC
+    #define TOC(X)
+    #define TIME(X)
+#endif
+
+
 float *num=NULL;
 int num_size=0;
 int world_size, world_rank;
@@ -18,6 +31,16 @@ int valid_size;
 int head, tail;
 int left_proc, right_proc;
 int has_left_proc = 1, has_right_proc=1;
+
+
+double total_comm_time = 0;
+
+double start_time;
+double end_time;
+double start_read_file;
+double end_read_file;
+double start_write_file;
+double end_write_file;
 
 
 
@@ -43,16 +66,20 @@ int odd_even_sort(){
     //external
     // [  |  || >]  [< ||  |  ]   [ | ]   [ | ]
     if(IS_ODD(head) && has_left_proc){
+        TIC;
         MPI_Sendrecv(&num[0], 1, MPI_FLOAT, left_proc, 0,
                     &buf, 1, MPI_FLOAT, left_proc, 0, MPI_COMM_WORLD, &status);
+        TOC(total_comm_time);
         if(num[0]<buf){
             num[0]=buf;
             swap = 1;
         }
     }
     if(IS_EVEN(tail) && has_right_proc){
+        TIC;
         MPI_Sendrecv(&num[num_size-1], 1, MPI_FLOAT, right_proc, 0,
                     &buf, 1, MPI_FLOAT, right_proc, 0, MPI_COMM_WORLD, &status);
+        TOC(total_comm_time);
         if(num[num_size-1]>buf){
             num[num_size-1] = buf;
             swap = 1;
@@ -71,16 +98,20 @@ int odd_even_sort(){
 
     //external
     if(IS_EVEN(head) && has_left_proc){
+        TIC;
         MPI_Sendrecv(&num[0], 1, MPI_FLOAT, left_proc, 0,
                     &buf, 1, MPI_FLOAT, left_proc, 0, MPI_COMM_WORLD, &status);
+        TOC(total_comm_time);
         if(num[0]<buf){
             num[0]=buf;
             swap = 1;
         }
     }
     if(IS_ODD(tail) && has_right_proc){
+        TIC;
         MPI_Sendrecv(&num[num_size-1], 1, MPI_FLOAT, right_proc, 0,
                     &buf, 1, MPI_FLOAT, right_proc, 0, MPI_COMM_WORLD, &status);
+        TOC(total_comm_time);
         if(num[num_size-1]>buf){
             num[num_size-1] = buf;
             swap = 1;
@@ -98,6 +129,9 @@ int main(int argc, char **argv){
 
     // initializing
     MPI_Init(&argc, &argv);
+
+    TIME(start_time);
+
 
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -157,12 +191,17 @@ int main(int argc, char **argv){
 #ifdef __DEBUG__
     printf("Rank %d: num_size %d, offset %d\n", world_rank, num_size, offset);
 #endif
+
+    TIME(start_read_file);
+
         /*  read file  */
     num = (float*)malloc(sizeof(float) * num_size);
 
     MPI_Status status;
     MPI_File_read_at_all(finh, offset*sizeof(float), num, num_size, MPI_FLOAT, &status);
 
+
+    TIME(end_read_file);
 
 #ifdef __DEBUG__
     int i=0;
@@ -174,11 +213,21 @@ int main(int argc, char **argv){
 #endif
 
     int sorted = 0;
+    int round=0;
+
 
     while(!sorted){
+
+#ifdef __MEASURE_TIME__
+        round++;
+#endif
+
         int st = odd_even_sort();
         MPI_Allreduce(&st, &sorted, 1, MPI_INT, MPI_BAND, MPI_COMM_WORLD);
     }
+
+
+    TIME(start_write_file);
 
 #ifdef __DEBUG__
     printf("Rank %d:", world_rank);
@@ -191,12 +240,19 @@ int main(int argc, char **argv){
     MPI_File_set_view(fouth, sizeof(float)*offset, MPI_FLOAT, MPI_FLOAT, "native", MPI_INFO_NULL);
     MPI_File_write_all(fouth, num, num_size, MPI_FLOAT, &status);   
 
-    //MPI_Barrier(MPI_COMM_WORLD);
+    TIME(end_write_file);
 
     MPI_File_close(&finh);
     MPI_File_close(&fouth);
 
     free(num);
+
+    TIME(end_time);
+
+#ifdef __MEASURE_TIME__
+    printf("%d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %d\n", world_rank,
+        start_time, start_read_file, end_read_file, start_write_file, end_write_file, total_comm_time, round);
+#endif
 
     //final
     MPI_Finalize();
