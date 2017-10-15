@@ -254,7 +254,7 @@ int main(int argc, char **argv){
 
 #ifdef __MEASURE_TIME__
     printf("%d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %d\n", world_rank,
-        start_time, start_read_file, end_read_file, start_write_file, end_write_file, total_comm_time, round);
+        start_time, start_read_file, end_read_file, start_write_file, end_write_file, end_time, total_comm_time, round);
 #endif
 
     //final

@@ -1,16 +1,16 @@
 #!/bin/bash
 
 
-prog='./HW1_103062372_advanced'
+prog='./HW1_103062372_basic'
 p='-p batch'
 declare -a Narr=('1' '1' '1' '1' '4'  '4'  '4'  '4'  '4')
 declare -a narr=('1' '2' '4' '8' '16' '24' '32' '40' '48')
-number=1000000000
-pf='1G'
+number=100000
+pf='100K'
 cs="testcase/case${pf}"
 ans="testcase/case${pf}.ans"
 out="out${pf}"
-log="advanced_log${pf}.txt"
+log="basic_log${pf}.txt"
 
 total=${#Narr[@]}
 pass=0
