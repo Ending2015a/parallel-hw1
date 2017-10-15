@@ -1,0 +1,30 @@
+N 1, n 1
+srun: Force Terminated job 26549
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 26549.0 ON apollo34 CANCELLED AT 2017-10-15T16:58:08 DUE TO TIME LIMIT ***
+srun: error: apollo34: task 0: Terminated
+
+real	30m0.568s
+user	0m0.011s
+sys	0m0.010s
+N 1, n 2
+srun: Force Terminated job 26827
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 26827.0 ON apollo32 CANCELLED AT 2017-10-15T17:28:08 DUE TO TIME LIMIT ***
+srun: error: apollo32: tasks 0-1: Terminated
+
+real	30m0.831s
+user	0m0.007s
+sys	0m0.015s
+N 1, n 4
+srun: Force Terminated job 27039
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 27039.0 ON apollo34 CANCELLED AT 2017-10-15T17:58:38 DUE TO TIME LIMIT ***
+srun: error: apollo34: tasks 0-3: Terminated
+
+real	30m29.882s
+user	0m0.011s
+sys	0m0.011s
+N 1, n 8
+srun: interrupt (one more within 1 sec to abort)
+srun: tasks 0-7: running

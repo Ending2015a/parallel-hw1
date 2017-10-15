@@ -5,11 +5,12 @@ prog='./HW1_103062372_advanced'
 p='-p batch'
 declare -a Narr=('1' '1' '1' '1' '4'  '4'  '4'  '4'  '4')
 declare -a narr=('1' '2' '4' '8' '16' '24' '32' '40' '48')
-number=100000000
-cs='testcase/case100M'
-ans='testcase/case100M.ans'
-out='out100M'
-log='log100M.txt'
+number=1000000000
+pf='1G'
+cs="testcase/case${pf}"
+ans="testcase/case${pf}.ans"
+out="out${pf}"
+log="advanced_log${pf}.txt"
 
 total=${#Narr[@]}
 pass=0
@@ -24,6 +25,7 @@ for ((i=0;i<$total;++i)); do
     echo "for case$i: -N=$N -n=$n"
 
     echo "N $N, n $n" >> $log
+    echo "time srun $p -N $N -n $n $prog $number $cs $out"
     { time srun $p -N $N -n $n $prog $number $cs $out >> $log ; } 2>> $log
 
     echo "case done -> verifying..."

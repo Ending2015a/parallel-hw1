@@ -4,13 +4,15 @@
 #include <math.h>
 
 
-#define MINIMUM_NUMBER 3
+#define __MEASURE_TIME__
+
+#define MINIMUM_NUMBER 4
 #define SWAP_B(a, b) ((a)^=(b)^=(a)^=(b))
 #define SWAP_F(a, b) float c=(a);(a)=(b);(b)=c
 #define SWAP(a, b) SWAP_F(a, b)
 #define IS_EVEN(a) ((~(a))&1)
 #define IS_ODD(a) ((a)&1)
-
+#define MAX(a, b) ((a)>(b) ? (a):(b))
 
 #ifdef __MEASURE_TIME__
     double __temp_time=0;
@@ -144,6 +146,7 @@ int main(int argc, char **argv){
     //make sure the numbers divided to each processor has more than MINIMUM_NUMBER
     if(total_num/world_size < MINIMUM_NUMBER){
         valid_size = total_num/MINIMUM_NUMBER;
+        valid_size = MAX(1, valid_size);
     }
 
 #ifdef __DEBUG__
