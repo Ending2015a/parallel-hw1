@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <random>
 #include <cmath>
+#include <string>
 
 int main(int argc, char **argv){
 
@@ -17,6 +18,7 @@ int main(int argc, char **argv){
     std::uniform_int_distribution<int> idis(0, 6);
 
     std::ofstream fout(argv[2], std::ofstream::binary);
+    std::ofstream fans(std::string(argv[2])+".ans", std::ofstream::binary);
 
     int num = atoi(argv[1]);
 
@@ -35,10 +37,21 @@ int main(int argc, char **argv){
 
     fout.close();
 
-
     clock_t end = clock();
 
-    std::cout << "take " << ((double) (end-start)) / CLOCKS_PER_SEC << " secs" << std::endl;
+    std::cout << "gen: take " << ((double) (end-start)) / CLOCKS_PER_SEC << " secs" << std::endl;
+
+    std::cout << "sorting..." << std::endl;
+    start = clock();
+    std::sort(que.begin(), que.end());
+
+    for(int i=0;i<num;i++){
+        fans.write((char*)&que[i], sizeof(float));
+    }
+
+    fans.close();
+
+    std::cout << "sort: take " << ((double)(clock()-start)) / CLOCKS_PER_SEC << " secs" << std::endl;
     return 0;
 
 }

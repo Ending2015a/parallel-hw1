@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 
-//#define __MEASURE_TIME__
+#define __MEASURE_TIME__
 
 #define MINIMUM_NUMBER 4
 #define SWAP_B(a, b) ((a)^=(b)^=(a)^=(b))

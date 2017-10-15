@@ -11,10 +11,10 @@ int main(int argc, char **argv){
     float n, m;
     int count=0;
     while(fin.read((char*)&n, sizeof(float))){
-        if(count <= 10000)
+        if(count <= 100)
             printf("%f, ", n);
         count++;
-        if(count <= 10000 && count%5==0){
+        if(count <= 100 && count%5==0){
             printf("\n");
         }
         
